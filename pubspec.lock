@@ -461,12 +461,10 @@ packages:
   web_scraper:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "feature/remove-dependency-on-flutter"
-      resolved-ref: a6e1b9cae94a2d915b5aa11c98ee9c5e82b9cc92
-      url: "https://github.com/defuncart/fork_web_scraper"
-    source: git
-    version: "0.0.5"
+      name: web_scraper
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.6"
   web_socket_channel:
     dependency: transitive
     description:
