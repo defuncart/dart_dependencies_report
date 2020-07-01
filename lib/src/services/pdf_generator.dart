@@ -8,10 +8,12 @@ import 'package:pdf/widgets.dart' as pw;
 import '../models/dependency.dart';
 import '../models/pdf_content.dart';
 
+/// A service which generates Markdown reports
 class PDFGenerator {
-  static Future<void> createExport({@required ReportContent content, String outputFilepath}) async {
-    final _dateFormater = DateFormat('MMMM dd yyyy HH:mm');
+  static final _dateFormater = DateFormat('MMMM dd yyyy HH:mm');
 
+  /// Creates and exports a report with [ReportContent] content at [outputFilepath]
+  static Future<void> createExport({@required ReportContent content, String outputFilepath}) async {
     pw.Widget _tableForDeps(context, {@required List<Dependency> deps}) => deps.isEmpty
         ? pw.Text('None')
         : pw.Table.fromTextArray(
