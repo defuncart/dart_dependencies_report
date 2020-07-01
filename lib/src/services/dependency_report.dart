@@ -77,7 +77,8 @@ class DependencyReport {
 
     final gitDeps = <Dependency>[];
     for (final package in git) {
-      final license = await GitHubScraper.licenseForPackage(package.url);
+      final license =
+          package.isHostedByCustomGit('github') ? await GitHubScraper.licenseForPackage(package.url) : _defaultText;
       gitDeps.add(Dependency(
         name: package.package(),
         version: package.version(),
