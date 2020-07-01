@@ -6,33 +6,35 @@ import 'package:meta/meta.dart';
 import '../models/dependency.dart';
 import '../models/pdf_content.dart';
 
+/// A service which generates Markdown reports
 class MDGenerator {
-  static final sb = StringBuffer();
+  static final _sb = StringBuffer();
   static final _dateFormater = DateFormat('MMMM dd yyyy HH:mm');
 
+  /// Creates and exports a report with [ReportContent] content at [outputFilepath]
   static Future<void> createExport({@required ReportContent content, String outputFilepath}) async {
-    sb.clear();
+    _sb.clear();
 
     // meta
-    sb.writeln('# ${content.title}');
-    sb.writeln();
-    sb.writeln('| | |');
-    sb.writeln('|-|-|');
-    sb.writeln('|Project Name|${content.projectName}|');
-    sb.writeln('|Project Version|${content.projectVersion}|');
-    sb.writeln('|Number of Dependencies|${content.totalNumberDependencies.toString()}|');
-    sb.writeln('|Date|${_dateFormater.format(DateTime.now())}|');
-    sb.writeln();
+    _sb.writeln('# ${content.title}');
+    _sb.writeln();
+    _sb.writeln('| | |');
+    _sb.writeln('|-|-|');
+    _sb.writeln('|Project Name|${content.projectName}|');
+    _sb.writeln('|Project Version|${content.projectVersion}|');
+    _sb.writeln('|Number of Dependencies|${content.totalNumberDependencies.toString()}|');
+    _sb.writeln('|Date|${_dateFormater.format(DateTime.now())}|');
+    _sb.writeln();
 
     //sdks
-    sb.writeln('## SDKs');
-    sb.writeln();
-    sb.writeln('|Name|Version|');
-    sb.writeln('|-|-|');
+    _sb.writeln('## SDKs');
+    _sb.writeln();
+    _sb.writeln('|Name|Version|');
+    _sb.writeln('|-|-|');
     for (final sdk in content.sdks) {
-      sb.writeln('|${sdk.name}|${sdk.version}|');
+      _sb.writeln('|${sdk.name}|${sdk.version}|');
     }
-    sb.writeln();
+    _sb.writeln();
 
     // direct
     _generateTableNameVersionLicenseScore(title: 'Direct Dependencies', deps: content.directDeps);
@@ -53,76 +55,76 @@ class MDGenerator {
     if (!file.existsSync()) {
       file.createSync(recursive: true);
     }
-    file.writeAsStringSync(sb.toString());
+    file.writeAsStringSync(_sb.toString());
   }
 
   static void _generateTableNameVersion({
     @required String title,
     @required List<Dependency> deps,
   }) {
-    sb.writeln('## $title');
-    sb.writeln();
+    _sb.writeln('## $title');
+    _sb.writeln();
     if (deps.isEmpty) {
-      sb.writeln('None.');
+      _sb.writeln('None.');
     } else {
-      sb.writeln('|Name|Version|');
-      sb.writeln('|-|-|');
+      _sb.writeln('|Name|Version|');
+      _sb.writeln('|-|-|');
       for (final dep in deps) {
-        sb.writeln('|${dep.name}|${dep.version}|');
+        _sb.writeln('|${dep.name}|${dep.version}|');
       }
     }
-    sb.writeln();
+    _sb.writeln();
   }
 
   static void _generateTableNameVersionLicenseScore({
     @required String title,
     @required List<Dependency> deps,
   }) {
-    sb.writeln('## $title');
-    sb.writeln();
+    _sb.writeln('## $title');
+    _sb.writeln();
     if (deps.isEmpty) {
-      sb.writeln('None.');
+      _sb.writeln('None.');
     } else {
-      sb.writeln('|Name|Version|License|Score|');
-      sb.writeln('|-|-|-|-|');
+      _sb.writeln('|Name|Version|License|Score|');
+      _sb.writeln('|-|-|-|-|');
       for (final dep in deps) {
         if (dep.url != null) {
-          sb.write('|[${dep.name}](${dep.url})|');
+          _sb.write('|[${dep.name}](${dep.url})|');
         } else {
-          sb.write('|${dep.name}|');
+          _sb.write('|${dep.name}|');
         }
 
         if (dep.version != null) {
-          sb.write('${dep.version}|${dep.license ?? ''}|${dep.score ?? ''}|');
+          _sb.write('${dep.version}|${dep.license ?? ''}|${dep.score ?? ''}|');
         } else {
-          sb.write('Part of sdk| | |');
+          _sb.write('Part of sdk| | |');
         }
-        sb.write('\n');
+        _sb.write('\n');
       }
     }
-    sb.writeln();
+    _sb.writeln();
   }
 
   static void _generateTableNameVersionLicenseRef({
     @required String title,
     @required List<Dependency> deps,
   }) {
-    sb.writeln('## $title');
-    sb.writeln();
+    _sb.writeln('## $title');
+    _sb.writeln();
     if (deps.isEmpty) {
-      sb.writeln('None.');
+      _sb.writeln('None.');
     } else {
-      sb.writeln('|Name|Version|License|Ref|');
-      sb.writeln('|-|-|-|-|');
+      _sb.writeln('|Name|Version|License|Ref|');
+      _sb.writeln('|-|-|-|-|');
       for (final dep in deps) {
         if (dep.url != null) {
-          sb.write('|[${dep.name}](${dep.url})|');
+          _sb.write('|[${dep.name}](${dep.url})|');
         } else {
-          sb.write('|${dep.name}|');
+          _sb.write('|${dep.name}|');
         }
-        sb.write('${dep.version}|${dep.license ?? ''}|${dep.ref ?? ''}|\n');
+        _sb.write('${dep.version}|${dep.license ?? ''}|${dep.ref ?? ''}|\n');
       }
     }
-    sb.writeln();
+    _sb.writeln();
   }
 }
