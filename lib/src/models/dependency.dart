@@ -1,14 +1,31 @@
 import 'package:meta/meta.dart';
 
+/// A model representing a package dependency
 class Dependency {
+  /// The name
   final String name;
+
+  /// The version
   final String version;
+
+  /// The calculated score by pub.dev
   final String score;
+
+  /// The about description
   final String about;
+
+  /// The license
   final String license;
+
+  /// The url (either from pub.dev, self-hosted or git)
   final String url;
+
+  /// The git ref (for git dependencies)
   final String ref;
 
+  /// Constructs a new instance of `Dependency`
+  ///
+  /// [name] is required, all other properties are optional
   const Dependency({
     @required this.name,
     this.version,

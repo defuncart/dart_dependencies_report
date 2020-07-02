@@ -1,7 +1,11 @@
 import 'package:web_scraper/web_scraper.dart';
 
+import '../configs/constants.dart' as constants;
+
+/// A scraper to extract info from GitHub projects
 class GitHubScraper {
-  static Future<String> licenseForPackage(String url) async {
+  /// Determines the licence for a given project
+  static Future<String> licenseForProject(String url) async {
     final _webScraper = WebScraper('$url');
     try {
       if (await _webScraper.loadWebPage('/blob/master/LICENSE')) {
@@ -13,6 +17,6 @@ class GitHubScraper {
       }
     } on WebScraperException catch (_) {}
 
-    return 'Unknown';
+    return constants.unknown;
   }
 }

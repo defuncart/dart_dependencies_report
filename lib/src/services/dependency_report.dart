@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:pubspec_lock/pubspec_lock.dart';
 import 'package:pubspec_yaml/pubspec_yaml.dart';
 
+import '../configs/constants.dart' as constants;
 import '../configs/default_settings.dart';
 import '../enums/file_extension.dart';
 import '../extensions/package_dependency_extensions.dart';
@@ -33,7 +34,6 @@ class DependencyReport {
 
     const _pubspecYamlPath = 'pubspec.yaml';
     const _pubspecLockPath = 'pubspec.lock';
-    const _defaultText = 'Unknown';
 
     // determine project name and version
     String projectName, projectVersion;
@@ -42,8 +42,8 @@ class DependencyReport {
       projectName = pubspecYaml.name;
       projectVersion = pubspecYaml.version.valueOr(() => null);
     } on Exception catch (_) {}
-    projectName ??= _defaultText;
-    projectVersion ??= _defaultText;
+    projectName ??= constants.unknown;
+    projectVersion ??= constants.unknown;
 
     int totalNumberDependencies;
     List<SDK> sdks;
@@ -77,8 +77,9 @@ class DependencyReport {
 
     final gitDeps = <Dependency>[];
     for (final package in git) {
-      final license =
-          package.isHostedByCustomGit('github') ? await GitHubScraper.licenseForPackage(package.url) : _defaultText;
+      final license = package.isHostedByCustomGit('github')
+          ? await GitHubScraper.licenseForProject(package.url)
+          : constants.unknown;
       gitDeps.add(Dependency(
         name: package.package(),
         version: package.version(),
