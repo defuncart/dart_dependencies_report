@@ -57,11 +57,15 @@ class DependencyReport {
       sdks = pubspecLock.sdks.map((sdk) => SDK(name: sdk.sdk, version: sdk.version)).toList();
 
       // determine lists
-      direct = pubspecLock.packages.where((package) => package.type() == DependencyType.direct).toList();
+      direct = pubspecLock.packages
+          .where((package) => package.type() == DependencyType.direct && !package.isGit && !package.isPath)
+          .toList();
       dev = pubspecLock.packages
           .where((package) => package.type() == DependencyType.development && !package.isGit && !package.isPath)
           .toList();
-      transitive = pubspecLock.packages.where((package) => package.type() == DependencyType.transitive).toList();
+      transitive = pubspecLock.packages
+          .where((package) => package.type() == DependencyType.transitive && !package.isGit && !package.isPath)
+          .toList();
       git = pubspecLock.packages.where((package) => package.isGit).toList();
       path = pubspecLock.packages.where((package) => package.isPath).toList();
     } on Exception catch (_) {}
