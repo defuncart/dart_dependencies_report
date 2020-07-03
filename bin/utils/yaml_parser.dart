@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:dart_dependencies_report/dart_dependencies_report.dart' show Settings;
+import 'package:dart_dependencies_report/dart_dependencies_report.dart' show Settings, UserDefinedGroup;
 import 'package:yaml/yaml.dart';
 
 import '../extensions/map_extensions.dart';
@@ -12,6 +12,7 @@ class YamlArguments {
   static const outputFilename = 'output_filename';
   static const generatePdf = 'generate_pdf';
   static const generateMd = 'generate_md';
+  static const userDefinedGroups = 'user_defined_groups';
 }
 
 /// A class which parses yaml
@@ -32,6 +33,7 @@ class YamlParser {
       outputFilename: yamlMap.tryParse(YamlArguments.outputFilename),
       generatePdf: yamlMap.tryParse(YamlArguments.generatePdf),
       generateMd: yamlMap.tryParse(YamlArguments.generateMd),
+      userDefinedGroups: _userRegionsFromYamlMap(yamlMap.tryParse(YamlArguments.userDefinedGroups)),
     );
   }
 
@@ -41,5 +43,14 @@ class YamlParser {
     final yamlString = file.readAsStringSync();
     final Map<dynamic, dynamic> yamlMap = loadYaml(yamlString);
     return yamlMap[yamlPackageSectionId];
+  }
+
+  /// Parses and retuns a List<UserDefinedRegion> from a YamlMap
+  static List<UserDefinedGroup> _userRegionsFromYamlMap(YamlMap map) {
+    if (map != null) {
+      return map.entries.map((kvp) => UserDefinedGroup(title: kvp.key, nameRegexp: kvp.value)).toList();
+    }
+
+    return null;
   }
 }

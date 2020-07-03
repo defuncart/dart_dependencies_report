@@ -1,5 +1,7 @@
 import 'package:meta/meta.dart';
 
+import 'user_defined_group.dart';
+
 /// A Model representing settings to generate reports
 class Settings {
   /// The report's title
@@ -17,6 +19,9 @@ class Settings {
   /// Whether a md should be generated
   final bool generateMd;
 
+  /// A list of user defined groups
+  final List<UserDefinedGroup> userDefinedGroups;
+
   /// Constructs a new instance of [Settings]
   ///
   /// All properties are required
@@ -26,5 +31,10 @@ class Settings {
     @required this.outputFilename,
     @required this.generatePdf,
     @required this.generateMd,
+    @required this.userDefinedGroups,
   });
+
+  @override
+  String toString() =>
+      '{title: $title, outputDirectory: $outputDirectory, outputFilename: $outputFilename, generatePdf: $generatePdf, generateMd: $generateMd, userDefinedGroups: $userDefinedGroups}';
 }
