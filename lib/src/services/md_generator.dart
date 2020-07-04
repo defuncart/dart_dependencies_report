@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
+import 'package:pubspec_lock/pubspec_lock.dart';
 
 import '../models/dependency.dart';
 import '../models/report_content.dart';
@@ -36,6 +37,11 @@ class MDGenerator {
     }
     _sb.writeln();
 
+    // user defined
+    for (final kvp in content.userDefinedGroupsDeps.entries) {
+      _generateTableNameVersionType(title: kvp.key, deps: kvp.value);
+    }
+
     // direct
     _generateTableNameVersionLicenseScore(title: 'Direct Dependencies', deps: content.directDeps);
 
@@ -43,13 +49,13 @@ class MDGenerator {
     _generateTableNameVersionLicenseScore(title: 'Dev Dependencies', deps: content.devDeps);
 
     // git hosted
-    _generateTableNameVersionLicenseRef(title: 'Git Hosted', deps: content.gitDeps);
+    _generateTableNameVersionTypeLicenseRef(title: 'Git Hosted', deps: content.gitDeps);
 
     // transitive
     _generateTableNameVersionLicenseScore(title: 'Transitive Dependencies', deps: content.transitiveDeps);
 
     // path
-    _generateTableNameVersion(title: 'Path Dependencies', deps: content.pathDeps);
+    _generateTableNameVersionType(title: 'Path Dependencies', deps: content.pathDeps);
 
     final file = File(outputFilepath);
     if (!file.existsSync()) {
@@ -105,7 +111,31 @@ class MDGenerator {
     _sb.writeln();
   }
 
-  static void _generateTableNameVersionLicenseRef({
+  static void _generateTableNameVersionTypeLicenseRef({
+    @required String title,
+    @required List<Dependency> deps,
+    bool showType = false,
+  }) {
+    _sb.writeln('## $title');
+    _sb.writeln();
+    if (deps.isEmpty) {
+      _sb.writeln('None.');
+    } else {
+      _sb.writeln('|Name|Version|Type|License|Ref|');
+      _sb.writeln('|-|-|-|-|-|');
+      for (final dep in deps) {
+        if (dep.url != null) {
+          _sb.write('|[${dep.name}](${dep.url})|');
+        } else {
+          _sb.write('|${dep.name}|');
+        }
+        _sb.write('${dep.version}|${_typeToString(dep.type)}|${dep.license ?? ''}|${dep.ref ?? ''}|\n');
+      }
+    }
+    _sb.writeln();
+  }
+
+  static void _generateTableNameVersionType({
     @required String title,
     @required List<Dependency> deps,
   }) {
@@ -114,17 +144,22 @@ class MDGenerator {
     if (deps.isEmpty) {
       _sb.writeln('None.');
     } else {
-      _sb.writeln('|Name|Version|License|Ref|');
-      _sb.writeln('|-|-|-|-|');
+      _sb.writeln('|Name|Version|Type|');
+      _sb.writeln('|-|-|-|');
       for (final dep in deps) {
-        if (dep.url != null) {
-          _sb.write('|[${dep.name}](${dep.url})|');
-        } else {
-          _sb.write('|${dep.name}|');
-        }
-        _sb.write('${dep.version}|${dep.license ?? ''}|${dep.ref ?? ''}|\n');
+        _sb.writeln('|${dep.name}|${dep.version}|${_typeToString(dep.type)}|');
       }
     }
     _sb.writeln();
+  }
+
+  static String _typeToString(DependencyType type) {
+    const _map = {
+      DependencyType.direct: 'direct',
+      DependencyType.development: 'dev',
+      DependencyType.transitive: 'transitive',
+    };
+
+    return _map[type];
   }
 }
