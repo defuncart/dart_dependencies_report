@@ -6,6 +6,7 @@ import 'package:pubspec_yaml/pubspec_yaml.dart';
 import '../configs/constants.dart' as constants;
 import '../configs/default_settings.dart';
 import '../enums/file_extension.dart';
+import '../enums/report_dependency_type.dart';
 import '../extensions/package_dependency_extensions.dart';
 import '../models/dependency.dart';
 import '../models/report_content.dart';
@@ -75,9 +76,9 @@ class DependencyReport {
       exit(0);
     }
 
-    final directDeps = await _fromPubDev(direct);
-    final devDeps = await _fromPubDev(dev);
-    final transitiveDeps = await _fromPubDev(transitive);
+    final directDeps = await _fromPubDev(direct, type: ReportDependencyType.direct);
+    final devDeps = await _fromPubDev(dev, type: ReportDependencyType.dev);
+    final transitiveDeps = await _fromPubDev(transitive, type: ReportDependencyType.transitive);
 
     final gitDeps = <Dependency>[];
     for (final package in git) {
@@ -87,6 +88,8 @@ class DependencyReport {
       gitDeps.add(Dependency(
         name: package.package(),
         version: package.version(),
+        type: package.type(),
+        reportType: ReportDependencyType.git,
         license: license,
         url: package.gitUrl,
         ref: package.gitRef,
@@ -98,7 +101,24 @@ class DependencyReport {
       pathDeps.add(Dependency(
         name: package.package(),
         version: package.version(),
+        type: package.type(),
+        reportType: ReportDependencyType.path,
       ));
+    }
+
+    final userDefinedGroupsDeps = <String, List<Dependency>>{};
+    if (settings.userDefinedGroups != null && settings.userDefinedGroups.isNotEmpty) {
+      for (final userDefinedGroup in settings.userDefinedGroups) {
+        final deps = <Dependency>[];
+        deps.addAll(directDeps.where((dep) => userDefinedGroup.nameRegexp.hasMatch(dep.name)));
+        deps.addAll(devDeps.where((dep) => userDefinedGroup.nameRegexp.hasMatch(dep.name)));
+        deps.addAll(transitiveDeps.where((dep) => userDefinedGroup.nameRegexp.hasMatch(dep.name)));
+        deps.addAll(gitDeps.where((dep) => userDefinedGroup.nameRegexp.hasMatch(dep.name)));
+        deps.addAll(pathDeps.where((dep) => userDefinedGroup.nameRegexp.hasMatch(dep.name)));
+        if (deps.isNotEmpty) {
+          userDefinedGroupsDeps[userDefinedGroup.title] = deps;
+        }
+      }
     }
 
     final reportContent = ReportContent(
@@ -112,6 +132,7 @@ class DependencyReport {
       transitiveDeps: transitiveDeps,
       gitDeps: gitDeps,
       pathDeps: pathDeps,
+      userDefinedGroupsDeps: userDefinedGroupsDeps,
     );
 
     if (generatePdf) {
@@ -141,7 +162,10 @@ class DependencyReport {
 
   static final _scraper = PubDevScraper();
 
-  static Future<List<Dependency>> _fromPubDev(List<PackageDependency> packages) async {
+  static Future<List<Dependency>> _fromPubDev(
+    List<PackageDependency> packages, {
+    ReportDependencyType type,
+  }) async {
     final deps = <Dependency>[];
     for (final package in packages) {
       final dep = package.isSDK
@@ -151,6 +175,8 @@ class DependencyReport {
               return Dependency(
                 name: package.package(),
                 version: package.version(),
+                type: package.type(),
+                reportType: type,
                 score: scrapedData?.score,
                 about: scrapedData?.about,
                 license: scrapedData?.license,
