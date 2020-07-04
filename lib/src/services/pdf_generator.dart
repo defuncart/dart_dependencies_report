@@ -6,7 +6,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 import '../models/dependency.dart';
-import '../models/pdf_content.dart';
+import '../models/report_content.dart';
 
 /// A service which generates Markdown reports
 class PDFGenerator {

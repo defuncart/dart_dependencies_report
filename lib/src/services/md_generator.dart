@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 
 import '../models/dependency.dart';
-import '../models/pdf_content.dart';
+import '../models/report_content.dart';
 
 /// A service which generates Markdown reports
 class MDGenerator {

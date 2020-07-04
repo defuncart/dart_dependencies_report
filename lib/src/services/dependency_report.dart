@@ -8,7 +8,7 @@ import '../configs/default_settings.dart';
 import '../enums/file_extension.dart';
 import '../extensions/package_dependency_extensions.dart';
 import '../models/dependency.dart';
-import '../models/pdf_content.dart';
+import '../models/report_content.dart';
 import '../models/sdk.dart';
 import '../models/settings.dart';
 import 'github_scraper.dart';

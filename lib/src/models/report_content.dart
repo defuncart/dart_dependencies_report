@@ -23,17 +23,20 @@ class ReportContent {
   /// A list of direct dependencies
   final List<Dependency> directDeps;
 
-  /// A list of direct dependencies
+  /// A list of dev dependencies
   final List<Dependency> devDeps;
 
-  /// A list of direct dependencies
+  /// A list of transitive dependencies
   final List<Dependency> transitiveDeps;
 
-  /// A list of direct dependencies
+  /// A list of git dependencies
   final List<Dependency> gitDeps;
 
-  /// A list of direct dependencies
+  /// A list of path dependencies
   final List<Dependency> pathDeps;
+
+  /// A map of string titles to list of dependencies per user defined group
+  final Map<String, List<Dependency>> userDefinedGroupsDeps;
 
   /// Constructs a new instance of [ReportContent]
   ///
@@ -49,6 +52,7 @@ class ReportContent {
     @required this.transitiveDeps,
     @required this.gitDeps,
     @required this.pathDeps,
+    @required this.userDefinedGroupsDeps,
   })  : assert(title != null),
         assert(projectName != null),
         assert(projectVersion != null),
@@ -57,5 +61,6 @@ class ReportContent {
         assert(directDeps != null),
         assert(transitiveDeps != null),
         assert(gitDeps != null),
-        assert(pathDeps != null);
+        assert(pathDeps != null),
+        assert(userDefinedGroupsDeps != null);
 }
