@@ -1,5 +1,7 @@
 import 'package:meta/meta.dart';
 
+import '../enums/dependency_type.dart';
+
 /// A model representing a package dependency
 class Dependency {
   /// The name
@@ -7,6 +9,9 @@ class Dependency {
 
   /// The version
   final String version;
+
+  /// The dependency type
+  final DependencyType type;
 
   /// The calculated score by pub.dev
   final String score;
@@ -29,6 +34,7 @@ class Dependency {
   const Dependency({
     @required this.name,
     this.version,
+    this.type,
     this.score,
     this.about,
     this.license,
@@ -41,6 +47,7 @@ class Dependency {
     final sb = StringBuffer('{name: $name');
     final properties = {
       'version': version,
+      'type': type,
       'score': score,
       'about': about,
       'license': license,
