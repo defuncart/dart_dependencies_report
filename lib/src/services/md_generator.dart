@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
-import 'package:pubspec_lock/pubspec_lock.dart';
 
+import '../extensions/dependency_type_extensions.dart';
 import '../models/dependency.dart';
 import '../models/report_content.dart';
 
@@ -64,24 +64,6 @@ class MDGenerator {
     file.writeAsStringSync(_sb.toString());
   }
 
-  static void _generateTableNameVersion({
-    @required String title,
-    @required List<Dependency> deps,
-  }) {
-    _sb.writeln('## $title');
-    _sb.writeln();
-    if (deps.isEmpty) {
-      _sb.writeln('None.');
-    } else {
-      _sb.writeln('|Name|Version|');
-      _sb.writeln('|-|-|');
-      for (final dep in deps) {
-        _sb.writeln('|${dep.name}|${dep.version}|');
-      }
-    }
-    _sb.writeln();
-  }
-
   static void _generateTableNameVersionLicenseScore({
     @required String title,
     @required List<Dependency> deps,
@@ -114,7 +96,6 @@ class MDGenerator {
   static void _generateTableNameVersionTypeLicenseRef({
     @required String title,
     @required List<Dependency> deps,
-    bool showType = false,
   }) {
     _sb.writeln('## $title');
     _sb.writeln();
@@ -129,7 +110,7 @@ class MDGenerator {
         } else {
           _sb.write('|${dep.name}|');
         }
-        _sb.write('${dep.version}|${_typeToString(dep.type)}|${dep.license ?? ''}|${dep.ref ?? ''}|\n');
+        _sb.write('${dep.version}|${dep.type.displayName}|${dep.license ?? ''}|${dep.ref ?? ''}|\n');
       }
     }
     _sb.writeln();
@@ -147,19 +128,9 @@ class MDGenerator {
       _sb.writeln('|Name|Version|Type|');
       _sb.writeln('|-|-|-|');
       for (final dep in deps) {
-        _sb.writeln('|${dep.name}|${dep.version}|${_typeToString(dep.type)}|');
+        _sb.writeln('|${dep.name}|${dep.version}|${dep.type.displayName}|');
       }
     }
     _sb.writeln();
-  }
-
-  static String _typeToString(DependencyType type) {
-    const _map = {
-      DependencyType.direct: 'direct',
-      DependencyType.development: 'dev',
-      DependencyType.transitive: 'transitive',
-    };
-
-    return _map[type];
   }
 }
