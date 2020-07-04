@@ -1,5 +1,5 @@
 /// An enum describing the types of dependency a report can contain
-enum DependencyType {
+enum ReportDependencyType {
   /// A direct dependency
   direct,
 

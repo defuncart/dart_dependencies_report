@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
+import 'package:pubspec_lock/pubspec_lock.dart';
 
-import '../enums/dependency_type.dart';
+import '../enums/report_dependency_type.dart';
 
 /// A model representing a package dependency
 class Dependency {
@@ -10,8 +11,11 @@ class Dependency {
   /// The version
   final String version;
 
-  /// The dependency type
+  /// The dependency type (direct, dev or transitive)
   final DependencyType type;
+
+  /// The report's dependency type (direct, dev, transitive, git or path)
+  final ReportDependencyType reportType;
 
   /// The calculated score by pub.dev
   final String score;
@@ -35,6 +39,7 @@ class Dependency {
     @required this.name,
     this.version,
     this.type,
+    this.reportType,
     this.score,
     this.about,
     this.license,
@@ -48,6 +53,7 @@ class Dependency {
     final properties = {
       'version': version,
       'type': type,
+      'reportType': reportType,
       'score': score,
       'about': about,
       'license': license,
