@@ -27,4 +27,8 @@ dart_dependencies_report:
   output_filename: dependencies_report
   generate_pdf: true
   generate_md: true
+  user_defined_groups:
+    "defuncart" : "flutter_analysis_options|dart_dependencies_report"
 ```
+
+`user_defined_groups` can be used to create specified groups in the report, in this case a group of dependencies maintained by defuncart.
