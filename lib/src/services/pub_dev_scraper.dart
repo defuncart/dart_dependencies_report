@@ -35,7 +35,7 @@ class PubDevScraper {
       final elements1 = _webScraper.getElement('aside.detail-info-box > h3', []);
 
       final indexAbout = elements1.indexOf(elements1.firstWhere(
-        (element) => element['title'] == 'About',
+        (element) => element['title'] == 'Metadata',
         orElse: () => null,
       ));
       final indexLicense = elements1.indexOf(elements1.firstWhere(
@@ -49,8 +49,11 @@ class PubDevScraper {
         final about = elements2[indexAbout]['title'].trim();
         final license = elements2[indexLicense + 1]['title'].replaceAll('(LICENSE)', '').trim();
 
-        final elements3 = _webScraper.getElement('div.score-box', []);
-        final score = elements3.first['title'];
+        final elements3 = _webScraper.getElement('span.packages-score-value-number', []);
+        final likes = elements3[0]['title'];
+        final pubPoints = elements3[1]['title'];
+        final popularity = elements3[2]['title'];
+        final score = '$likes/$pubPoints/$popularity';
 
         return PubDevScrapedData(about: about, license: license, score: score);
       } else {
