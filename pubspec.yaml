@@ -3,13 +3,15 @@ description: A package which generates a report of all a project's dependencies.
 version: 0.0.1
 publish_to: 'none'
 homepage: https://github.com/defuncart/dart_dependencies_report
+repository: https://github.com/defuncart/dart_dependencies_report
+issue_tracker: https://github.com/defuncart/dart_dependencies_report
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.8.0 <3.0.0"
 
 dependencies:
   meta: ^1.1.8
-  intl: ^0.16.1
+  intl: ^0.16.0
   pubspec_lock: ^2.0.1
   pubspec_yaml: ^2.0.1
   pdf: ^1.11.0
